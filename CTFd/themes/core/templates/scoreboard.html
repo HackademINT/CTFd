@@ -16,40 +16,82 @@
 	</div>
 
 	{% cache 60, CacheKeys.PUBLIC_SCOREBOARD_TABLE %}
-	{% if standings %}
+	{% if standings_interne %}
+	<h3>Classement TSP :</h3>
 	<div id="scoreboard" class="row">
 		<div class="col-md-12">
 			<table class="table table-striped">
 				<thead>
-					<tr>
-						<td scope="col" width="10px"><b>Place</b></td>
-						<td scope="col"><b>Team</b></td>
-						<td scope="col"><b>Score</b></td>
-					</tr>
+				<tr>
+					<td scope="col" width="10px"><b>Place</b></td>
+					<td scope="col"><b>Team</b></td>
+					<td scope="col"><b>Score</b></td>
+				</tr>
 				</thead>
 				<tbody>
-				{% for standing in standings %}
-					<tr>
-						<th scope="row" class="text-center">{{ loop.index }}</th>
-						<td>
-							<a href="{{ generate_account_url(standing.account_id) }}">
-								{{ standing.name | truncate(50) }}
+				{% for standing in standings_interne %}
+				<tr>
+					<th scope="row" class="text-center">{{ loop.index }}</th>
+					<td>
+						<a href="{{ generate_account_url(standing.account_id) }}">
+							{{ standing.name | truncate(50) }}
 
-								{% if standing.oauth_id %}
-									{% if Configs.user_mode == 'teams' %}
-									<a href="https://majorleaguecyber.org/t/{{ standing.name }}">
-										<span class="badge badge-primary">Official</span>
-									</a>
-									{% elif Configs.user_mode == 'users' %}
-									<a href="https://majorleaguecyber.org/u/{{ standing.name }}">
-										<span class="badge badge-primary">Official</span>
-									</a>
-									{% endif %}
-								{% endif %}
+							{% if standing.oauth_id %}
+							{% if Configs.user_mode == 'teams' %}
+							<a href="https://majorleaguecyber.org/t/{{ standing.name }}">
+								<span class="badge badge-primary">Official</span>
 							</a>
-						</td>
-						<td>{{ standing.score }}</td>
-					</tr>
+							{% elif Configs.user_mode == 'users' %}
+							<a href="https://majorleaguecyber.org/u/{{ standing.name }}">
+								<span class="badge badge-primary">Official</span>
+							</a>
+							{% endif %}
+							{% endif %}
+						</a>
+					</td>
+					<td>{{ standing.score }}</td>
+				</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+	{% endif %}
+	{% if standings_externe %}
+	<h3>Classement externes :</h3>
+	<div id="scoreboard" class="row">
+		<div class="col-md-12">
+			<table class="table table-striped">
+				<thead>
+				<tr>
+					<td scope="col" width="10px"><b>Place</b></td>
+					<td scope="col"><b>Team</b></td>
+					<td scope="col"><b>Score</b></td>
+				</tr>
+				</thead>
+				<tbody>
+				{% for standing in standings_externe %}
+				<tr>
+					<th scope="row" class="text-center">{{ loop.index }}</th>
+					<td>
+						<a href="{{ generate_account_url(standing.account_id) }}">
+							{{ standing.name | truncate(50) }}
+
+							{% if standing.oauth_id %}
+							{% if Configs.user_mode == 'teams' %}
+							<a href="https://majorleaguecyber.org/t/{{ standing.name }}">
+								<span class="badge badge-primary">Official</span>
+							</a>
+							{% elif Configs.user_mode == 'users' %}
+							<a href="https://majorleaguecyber.org/u/{{ standing.name }}">
+								<span class="badge badge-primary">Official</span>
+							</a>
+							{% endif %}
+							{% endif %}
+						</a>
+					</td>
+					<td>{{ standing.score }}</td>
+				</tr>
 				{% endfor %}
 				</tbody>
 			</table>
@@ -61,9 +103,9 @@
 {% endblock %}
 
 {% block scripts %}
-	<script defer src="{{ url_for('views.themes', path='js/echarts.bundle.js') }}"></script>
+<script defer src="{{ url_for('views.themes', path='js/echarts.bundle.js') }}"></script>
 {% endblock %}
 
 {% block entrypoint %}
-	<script defer src="{{ url_for('views.themes', path='js/pages/scoreboard.js') }}"></script>
+<script defer src="{{ url_for('views.themes', path='js/pages/scoreboard.js') }}"></script>
 {% endblock %}

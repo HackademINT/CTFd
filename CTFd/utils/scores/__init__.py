@@ -1,7 +1,7 @@
 from sqlalchemy.sql.expression import union_all
 
 from CTFd.cache import cache
-from CTFd.models import Awards, Challenges, Solves, Teams, Users, db
+from CTFd.models import Awards, Challenges, Solves, Teams, Users, UserFieldEntries, db
 from CTFd.utils import get_config
 from CTFd.utils.dates import unix_time_to_utc
 from CTFd.utils.modes import get_model
@@ -98,9 +98,11 @@ def get_standings(count=None, admin=False, fields=[]):
                 Model.oauth_id.label("oauth_id"),
                 Model.name.label("name"),
                 sumscores.columns.score,
+                UserFieldEntries.value.label("fields"),
                 *fields,
             )
             .join(sumscores, Model.id == sumscores.columns.account_id)
+            .outerjoin(UserFieldEntries, Model.id == UserFieldEntries.user_id)
             .filter(Model.banned == False, Model.hidden == False)
             .order_by(sumscores.columns.score.desc(), sumscores.columns.id)
         )
